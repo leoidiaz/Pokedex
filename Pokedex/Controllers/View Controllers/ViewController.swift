@@ -14,11 +14,14 @@ class ViewController: UIViewController {
     @IBOutlet weak var pokeImageView: UIImageView!
     @IBOutlet weak var pokeNameLabel: UILabel!
     @IBOutlet weak var pokeID: UILabel!
+    @IBOutlet weak var pokeTypeLabel: UILabel!
+    @IBOutlet weak var randomButton: UIButton!
     
     //MARK: - LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
         pokeSearchBar.delegate = self
+        updateView()
     }
     @IBAction func randomButtonPressed(_ sender: Any) {
         let randomPokemon = String(Int.random(in: 1...802))
@@ -41,13 +44,22 @@ class ViewController: UIViewController {
                 switch result {
                 case .success(let sprite):
                     self.pokeImageView.image = sprite
-                    self.pokeNameLabel.text = pokemon.name.uppercased()
+                    self.pokeNameLabel.text = pokemon.name.capitalized
                     self.pokeID.text = "ID: \(pokemon.id)"
+                    var pokemonType = String()
+                    pokemon.types.forEach { (type) in
+                        pokemonType += type.type.name.lowercased().capitalized + " "
+                    }
+                    self.pokeTypeLabel.text = ("Type: \(pokemonType)")
                 case .failure(let error):
                     self.presentErrorToUser(localizedError: error)
                 }
             }
         }
+    }
+    
+    private func updateView() {
+        randomButton.layer.cornerRadius = 15
     }
 }
 
